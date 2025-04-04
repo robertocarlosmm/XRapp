@@ -9,6 +9,12 @@ export async function startScene(engine){
 
     const box = new MeshBuilder.CreateBox("box", {size:.5}, scene);
 
+    //PARA EL AR - solo funciona en https (cap 5 - vite.config.js)
+    await scene.createDefaultXRExperienceAsync({
+        uiOptions: {sessionMode: "immersive-ar"}
+    })
+
+
     await scene.whenReadyAsync();
     return scene;
 }
