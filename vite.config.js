@@ -1,5 +1,7 @@
 import { defineConfig } from 'vite';
+import mkcert from 'vite-plugin-mkcert';
 
 export default defineConfig({
-  base: '/XRapp/', // 👈 importante: respeta mayúsculas y minúsculas
+  plugins: [mkcert()],
+  server: { https: true },
 });
