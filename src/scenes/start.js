@@ -1,4 +1,7 @@
-import {Scene, HemisphericLight, FreeCamera, Vector3, MeshBuilder} from "babylonjs"
+import {Scene, HemisphericLight, FreeCamera, Vector3, MeshBuilder, WebXRHitTest, PointerEventTypes, WebXRAnchorSystem
+
+} from "babylonjs"
+
 
 export async function startScene(engine){
     const scene = new Scene(engine);
@@ -7,13 +10,39 @@ export async function startScene(engine){
     const cam = new FreeCamera("cam", new Vector3(0,0,-2), scene);
     cam.attachControl()
 
-    const box = new MeshBuilder.CreateBox("box", {size:.5}, scene);
+    //const box = new MeshBuilder.CreateBox("box", {size:.5}, scene);
+    const dot = MeshBuilder.CreateSphere("dot", {diameter: 0.5}, scene);
 
     //PARA EL AR - solo funciona en https (cap 5 - vite.config.js)
-    await scene.createDefaultXRExperienceAsync({
+    const xr = await scene.createDefaultXRExperienceAsync({
         uiOptions: {sessionMode: "immersive-ar"}
     })
 
+    const fm = xr.baseExperience.featuresManager;
+
+    const anchorSystem = fm.enableFeature(WebXRAnchorSystem, "latest");
+
+
+    //para colectar data del mundo real
+    let lastHit;
+    const hitTest = fm.enableFeature(WebXRHitTest, "latest");
+    hitTest.onHitTestResultObservable.add((results) => {
+        if (results.length) {
+            lastHit = results[0];
+            results[0].transformationMatrix.decompose(dot.scaling, dot.rotationQuaternion, dot.position);
+        }
+    });
+
+    //para ver el ancla
+    anchorSystem.onAnchorAddedObservable.add( anchor => {
+        anchor.attachedNode = dot.clone();
+    })
+
+    scene.onPointerObservable.add( event => {
+        if(lastHit && anchorSystem){
+            anchorSystem.addAnchorPointUsingHitTestResultAsync(lastHit);
+        }
+    }, PointerEventTypes.POINTERDOWN)
 
     await scene.whenReadyAsync();
     return scene;
