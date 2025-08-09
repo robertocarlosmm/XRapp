@@ -1,8 +1,9 @@
 import {
     Scene, HemisphericLight, FreeCamera, Vector3, MeshBuilder, WebXRHitTest,
-    PointerEventTypes, WebXRAnchorSystem, SceneLoader
+    PointerEventTypes, WebXRAnchorSystem, Scalar
 } from "babylonjs"
-
+import { LoadAssetContainerAsync } from "@babylonjs/core/Loading/sceneLoader";
+import "@babylonjs/loaders/glTF"; // necesario para .glb/.gltf
 
 
 export async function startScene(engine) {
@@ -13,11 +14,19 @@ export async function startScene(engine) {
     cam.attachControl()
 
     //const box = new MeshBuilder.CreateBox("box", {size:.5}, scene);
-    const dot = MeshBuilder.CreateSphere("dot", { diameter: 0.5 }, scene);
+    const dot = MeshBuilder.CreateSphere("dot", { diameter: 0.05 }, scene);
 
     //importar modelo
-    const { meshes } = await SceneLoader.ImportMeshAsync("", "./models/", "PruebaModel.glb", scene);
-    meshes[0].position.x = 2;
+    /*
+    const { meshes, animationGroups } = await SceneLoader.ImportMeshAsync("", "./models/", "PruebaModel.glb", scene);
+    meshes[0].position.x = 2;*/
+    const container = await LoadAssetContainerAsync("./models/PruebaModel.glb", scene);
+    container.addAllToScene();
+    container.meshes[0].position.x = 2;
+    // Reproducir todas las animaciones en loop
+    container.animationGroups.forEach(ag => ag.start(true)); // (loop = true)
+    // Opcional: velocidad
+    container.animationGroups.forEach(ag => ag.speedRatio = 1.0);
 
 
     //PARA EL AR - solo funciona en https (cap 5 - vite.config.js)
@@ -36,13 +45,16 @@ export async function startScene(engine) {
     hitTest.onHitTestResultObservable.add((results) => {
         if (results.length) {
             lastHit = results[0];
-            results[0].transformationMatrix.decompose(dot.scaling, dot.rotationQuaternion, dot.position);
+            //results[0].transformationMatrix.decompose(dot.scaling, dot.rotationQuaternion, dot.position);
+            results[0].transformationMatrix.decompose(container.meshes[0].scaling, container.meshes[0].rotationQuaternion, container.meshes[0].position);
         }
     });
 
     //para ver el ancla
     anchorSystem.onAnchorAddedObservable.add(anchor => {
-        anchor.attachedNode = dot.clone();
+        const clone = container.meshes[0].clone("animation_clone");
+        //clone.position.x = Scalar.RandomRange(1.5,2)
+        anchor.attachedNode = clone;
     })
 
     scene.onPointerObservable.add(event => {
