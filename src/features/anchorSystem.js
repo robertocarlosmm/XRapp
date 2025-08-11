@@ -1,5 +1,8 @@
 import { WebXRAnchorSystem } from "@babylonjs/core/XR/features/WebXRAnchorSystem.js";
 import { PointerEventTypes } from "@babylonjs/core/Events/pointerEvents.js";
+import { getLastHit } from "./hitTest.js";
+import { createSphere } from "../tools.js";
+import { applyShadow } from "./shadows.js";
 
 let enabled = false;
 
@@ -12,13 +15,17 @@ export function enableAnchorSystem(fm, scene) {
             /*const clone = container.meshes[0].clone("animation_clone");
             //clone.position.x = Scalar.RandomRange(1.5,2)
             anchor.attachedNode = clone;*/
+            const sphere = createSphere(scene, { diameter: 0.06 });
+            applyShadow(sphere);
+            anchor.attachedNode = sphere;
         })
         enabled = true;
 
         scene.onPointerObservable.add(event => {
-            /*if (lastHit && anchorSystem) {
+            const lastHit = getLastHit();
+            if (lastHit && anchorSystem) {
                 anchorSystem.addAnchorPointUsingHitTestResultAsync(lastHit);
-            }*/
+            }
         }, PointerEventTypes.POINTERDOWN)
 
         return anchorSystem;

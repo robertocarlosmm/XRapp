@@ -1,5 +1,6 @@
-import { getLastHit, enableHitTest } from "./hitTest.js";
+import { enableHitTest } from "./hitTest.js";
 import { enableAnchorSystem } from "./anchorSystem.js";
+import { enableLightEstimation } from "./lightEstimation.js";
 
 export async function enableExEperience(scene) {
     try {
@@ -12,6 +13,7 @@ export async function enableExEperience(scene) {
 
         enableHitTest(fm, scene);
         enableAnchorSystem(fm, scene);
+        enableLightEstimation(fm);
 
     } catch (error) {
         console.error("Error enabling XR Experience:", error);

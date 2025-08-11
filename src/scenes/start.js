@@ -1,13 +1,14 @@
-import {
-    Scene, HemisphericLight, FreeCamera, Vector3} from "babylonjs"
+import {Scene, FreeCamera, Vector3} from "babylonjs"
 import { enableExEperience } from "../features/xrExperience.js";
+import { createArGround } from "../tools.js";
+
 /*import { LoadAssetContainerAsync } from "@babylonjs/core/Loading/sceneLoader";
 import "@babylonjs/loaders/glTF"; // necesario para .glb/.gltf*/
 
 
 export async function startScene(engine) {
     const scene = new Scene(engine);
-    const light = new HemisphericLight("light", new Vector3(0, 2, 0), scene);
+    //const light = new HemisphericLight("light", new Vector3(0, 2, 0), scene);
 
     const cam = new FreeCamera("cam", new Vector3(0, 0, -2), scene);
     cam.attachControl()
@@ -26,8 +27,11 @@ export async function startScene(engine) {
     container.animationGroups.forEach(ag => ag.speedRatio = 1.0);
     */
 
-    await enableExEperience(scene);
+    const ground = createArGround(scene);
 
     await scene.whenReadyAsync();
+
+    await enableExEperience(scene);
+
     return scene;
 }
