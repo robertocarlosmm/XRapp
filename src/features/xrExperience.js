@@ -1,6 +1,7 @@
 import { enableHitTest } from "./hitTest.js";
 import { enableAnchorSystem } from "./anchorSystem.js";
-import { enableLightEstimation } from "./lightEstimation.js";
+import { enableLightEstimation } from "./lightEstimation.js";   
+import { enableXRStateChangeCallback } from "./xrStateChange.js";
 
 export async function enableExEperience(scene) {
     try {
@@ -11,6 +12,8 @@ export async function enableExEperience(scene) {
 
         const fm = xr.baseExperience.featuresManager;
         
+        enableXRStateChangeCallback(xr, scene);
+
         enableHitTest(fm, scene);
         enableAnchorSystem(fm, scene);
         enableLightEstimation(fm);
