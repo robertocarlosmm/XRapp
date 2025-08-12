@@ -13,11 +13,15 @@ export function enableHitTest(fm, scene) {
 
         const hitTest = fm.enableFeature(WebXRHitTest, "latest");
         //const dot = scene.getMeshByName("dot");
+        const ground = scene.getMeshByName("ground");
+        if(!ground) throw new Error("No ground");
+
         const dot = MeshBuilder.CreateSphere("dot", { diameter: 0.05 }, scene);
         hitTest.onHitTestResultObservable.add((results) => {
             if (results.length) {
                 lastHit = results[0];
                 results[0].transformationMatrix.decompose(dot.scaling, dot.rotationQuaternion, dot.position);
+                ground.position.y = dot.position.y - 0.03; // Ajustar ligeramente por debajo del plano de la cámara
                 //results[0].transformationMatrix.decompose(container.meshes[0].scaling, container.meshes[0].rotationQuaternion, container.meshes[0].position);
             } else{
                 lastHit = undefined;

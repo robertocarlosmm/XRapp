@@ -10,7 +10,7 @@ export async function enableExEperience(scene) {
         })
 
         const fm = xr.baseExperience.featuresManager;
-
+        
         enableHitTest(fm, scene);
         enableAnchorSystem(fm, scene);
         enableLightEstimation(fm);

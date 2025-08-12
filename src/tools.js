@@ -1,4 +1,4 @@
-import { Color3, PBRMaterial } from "@babylonjs/core";
+import { Color3, PBRMaterial } from "babylonjs";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder.js";
 import { ShadowOnlyMaterial } from "babylonjs-materials";
 /*

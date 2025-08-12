@@ -1,4 +1,4 @@
-import { ShadowGenerator, WebXRLightEstimation } from "@babylonjs/core";
+import { WebXRLightEstimation } from "babylonjs";
 import { createShadowGenerator } from "./shadows.js";
 
 

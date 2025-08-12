@@ -1,4 +1,4 @@
-import { ShadowGenerator } from "@babylonjs/core";
+import { ShadowGenerator } from "babylonjs";
 
 let shadowGenerator = undefined;
 export function createShadowGenerator(scene, directionalLight) {
